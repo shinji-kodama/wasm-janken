@@ -1,24 +1,3 @@
-# [application]
-# name = "wasm-janken"
-# # current support: web, desktop
-# # default: web
-# default_platform = "web"
-# out_dir = "docs"
-# base_path = "wasm-janken"
-
-# [web.app]
-# title = "janken app"
-
-# [web.watcher]
-# reload_html = true
-# watch_path = ["src", "docs"]
-
-# [web.resource]
-# style = [
-#   "./assets/dioxus/name.js"
-# ]
-
-
 [application]
 
 # App (Project) Name
@@ -34,7 +13,7 @@ out_dir = "docs"
 base_path = "wasm-janken"
 
 # resource (public) file folder
-# asset_dir = "public"
+asset_dir = "public"
 
 [web.app]
 
@@ -47,7 +26,7 @@ title = "wasm-janken"
 reload_html = true
 
 # which files or dirs will be watcher monitoring
-watch_path = ["src", "docs"]
+watch_path = ["src", "public"]
 
 # include `assets` in web platform
 [web.resource]
@@ -60,9 +39,10 @@ style = []
 # {% endif %}
 
 # Javascript code file
-script = ["docs/assets/dioxus/wasm-janken.js"]
+script = []
 
 [web.resource.dev]
+style = []
 
 # Javascript code file
 # serve: [dev-server] only
