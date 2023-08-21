@@ -131,7 +131,7 @@ fn App(cx: Scope) -> Element {
           result.get() as &str
         }
       }
-      if result.get().clone() == "あなたの負け" {
+      if result.get().clone() == "負け・・・" {
         rsx! {
           div {
             style: "margin: 0 auto; width: 144px; display:flex; flex-direction: column; align-items:center;",
