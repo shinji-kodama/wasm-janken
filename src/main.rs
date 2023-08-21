@@ -2,15 +2,10 @@
 use dioxus::prelude::*;
 use reqwest::{self, Error};
 use wasm_bindgen::prelude::*;
-// use futures::future::join_all;
 use rand::prelude::*;
 use serde::Deserialize;
-// use serde_json::json;
 
-// #[tokio::main]
 fn main() {
-  // Init logger
-  // dioxus_logger::init(LevelFilter::Info).expect("failed to init logger");
   dioxus_web::launch(App);
 }
 
@@ -26,46 +21,40 @@ extern "C" {
   fn log(s: &str);
 }
 
-// #[tokio::main]
 fn App(cx: Scope) -> Element {
   let my_hand  = use_state(cx, || 0);
   let cpu_hand = use_state(cx, || 0);
   let result = use_state(cx, || "");
-  let image = use_future(cx, (), |_| get_image());
-  // let resp = use_state(cx, || ApiResponse {
-  //   message: "".to_string(),
-  //   status: "".to_string(),
-  // });
 
+  let image_url = use_state(cx, || ApiResponse{
+    message: String::new(),
+    status: String::new(), 
+  });
 
+  let get_image_url = move |_| {
+    cx.spawn({
+      let image_url = image_url.to_owned();
 
-  // let get_img_url = move |_| {
-  //   cx.spawn({
-  //     let resp = resp.to_owned();      
-  //     async move {
-  //       let res = reqwest::get("https://dog.ceo/api/breeds/image/random")
-  //         // .send()
-  //         .await
-  //         .unwrap()
-  //         .json::<ApiResponse>()
-  //         .await;
-    
-  //       log(&format!("response: {:?}", res));
+      async move {
+        let res: Result<ApiResponse, Error> = 
+          reqwest::get("https://dog.ceo/api/breeds/image/random")
+            .await
+            .unwrap()
+            .json()
+            .await;
         
-  //       match res {
-  //         Ok(data) => {
-  //           resp.set(data);
-  //         },
-  //         Err(_) => {
-  //           log("error");
-  //         }
-  //       }
-
-  //     }
-
-
-  //   })
-  // };
+        match res {
+          Ok(_data) => {
+            log(&format!("status: {}", _data.status));
+            image_url.set(_data);
+          }
+          Err(_err) => {
+            log(&format!("Error get image url : {:?}", _err));
+          }
+        }
+      }
+    })
+  };
 
   let hands = [
     "https://jskm.sakura.ne.jp/js01/kadai/img02/g.png",
@@ -74,41 +63,6 @@ fn App(cx: Scope) -> Element {
   ];
 
   cx.render(rsx! {
-    div {
-      match image.clone().value() {
-        Some(Ok(res)) => {
-          let url: &str = &res.message;
-          // let str: &str = &url;
-          rsx!{
-            img {
-              src: url,
-            }
-            // p {
-            //   str
-            // }
-          }
-        }
-        Some(Err(_)) => {
-          rsx!{
-            p {
-              "err"
-            }
-          }
-        }
-        None => {
-          rsx! {
-            p {"none"}
-          }
-        }
-      }
-    }
-    // div {
-    //   resp.get().message
-    // }
-    // button {
-    //   onclick: get_img_url,
-    //   "get image"
-    // }
     div {
       h3 {
         style: "text-align: center;",
@@ -125,9 +79,9 @@ fn App(cx: Scope) -> Element {
             style: "padding: 4px 8px; background-color: #000; border-radius: 12px;",
             onclick: move |_| { 
               my_hand.set(i + 1);
-              let tmp_hand = dicide_cpu_hand();
-              cpu_hand.set(tmp_hand);
-              result.set(janken(i + 1, tmp_hand ));
+              let tmp_cpu_hand = dicide_cpu_hand();
+              cpu_hand.set(tmp_cpu_hand);
+              result.set(janken(i + 1, tmp_cpu_hand));
             },
             img {
               width: "64px",
@@ -180,11 +134,15 @@ fn App(cx: Scope) -> Element {
       if result.get().clone() == "あなたの負け" {
         rsx! {
           div {
-            style: "margin: 0 auto; width: 120px;",
+            style: "margin: 0 auto; width: 144px; display:flex; flex-direction: column; align-items:center;",
             button {
-              "Chat GPTに聞く"
+              onclick: get_image_url,
+              "傷ついた心を癒してもらうわん"
             }
-  
+            img {
+              style: "margin-top: 24px; max-height: 480px",
+              src: &image_url.get().message as &str
+            }
           }
         }
       }
@@ -202,31 +160,10 @@ fn janken(my_hand: usize, cpu_hand: usize) -> &'static str {
   let result = (my_hand + 3 - cpu_hand) % 3;
   let result = match result {
     0 => "あいこ",
-    1 => "あなたの負け",
-    2 => "あなたの勝ち",
+    1 => "負け・・・",
+    2 => "勝ち！",
     _ => "エラー",
   };
   log(&format!("{} {} {}", my_hand, cpu_hand, result));
   result
 }
-
-async fn get_image() -> Result<ApiResponse, Error> {
-  let url = "https://dog.ceo/api/breeds/image/random";
-  reqwest::get(url)
-    .await
-    .unwrap()
-    .json()
-    .await
-    
-}
-
-// #[tokio::main]
-// async fn chat () {
-//   let body = reqwest::get("https://www.rust-lang.org")
-//     .await
-//     .unwrap()
-//     .text()
-//     .await
-//     .unwrap();
-//   log(&format!("response: {}", body));
-// }
