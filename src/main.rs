@@ -1,8 +1,8 @@
 #![allow(non_snake_case)]
 use dioxus::prelude::*;
-// use reqwest::{self};
+use reqwest::{self, Error};
 use wasm_bindgen::prelude::*;
-
+// use futures::future::join_all;
 use rand::prelude::*;
 use serde::Deserialize;
 // use serde_json::json;
@@ -14,11 +14,11 @@ fn main() {
   dioxus_web::launch(App);
 }
 
-// #[derive(Deserialize, Debug)]
-// struct ApiResponse {
-//   message: String,
-//   status: String,
-// }
+#[derive(Deserialize, Debug, Clone)]
+struct ApiResponse {
+  message: String,
+  status: String,
+}
 
 #[wasm_bindgen]
 extern "C" {
@@ -31,10 +31,13 @@ fn App(cx: Scope) -> Element {
   let my_hand  = use_state(cx, || 0);
   let cpu_hand = use_state(cx, || 0);
   let result = use_state(cx, || "");
+  let image = use_future(cx, (), |_| get_image());
   // let resp = use_state(cx, || ApiResponse {
   //   message: "".to_string(),
   //   status: "".to_string(),
   // });
+
+
 
   // let get_img_url = move |_| {
   //   cx.spawn({
@@ -71,6 +74,34 @@ fn App(cx: Scope) -> Element {
   ];
 
   cx.render(rsx! {
+    div {
+      match image.clone().value() {
+        Some(Ok(res)) => {
+          let url: &str = &res.message;
+          // let str: &str = &url;
+          rsx!{
+            img {
+              src: url,
+            }
+            // p {
+            //   str
+            // }
+          }
+        }
+        Some(Err(_)) => {
+          rsx!{
+            p {
+              "err"
+            }
+          }
+        }
+        None => {
+          rsx! {
+            p {"none"}
+          }
+        }
+      }
+    }
     // div {
     //   resp.get().message
     // }
@@ -113,7 +144,7 @@ fn App(cx: Scope) -> Element {
             style: "padding: 4px 8px; background-color: blue; border-radius: 12px; width: 64px;height: 64px;",
             img {
               width: "64px",
-              src: if my_hand.get().clone() != 0 {hands[my_hand.get() - 1 as usize]} else {""},
+              src: if my_hand.get().clone() != 0 { hands[my_hand.get() - 1 as usize] } else {""},
             }
           }
           p {
@@ -177,6 +208,16 @@ fn janken(my_hand: usize, cpu_hand: usize) -> &'static str {
   };
   log(&format!("{} {} {}", my_hand, cpu_hand, result));
   result
+}
+
+async fn get_image() -> Result<ApiResponse, Error> {
+  let url = "https://dog.ceo/api/breeds/image/random";
+  reqwest::get(url)
+    .await
+    .unwrap()
+    .json()
+    .await
+    
 }
 
 // #[tokio::main]
