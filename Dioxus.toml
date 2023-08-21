@@ -8,7 +8,7 @@ name = "wasm-janken"
 default_platform = "web"
 
 # `build` & `serve` dist path
-# out_dir = "docs"
+out_dir = "docs"
 
 base_path = "shinji-kodama/wasm-janken"
 

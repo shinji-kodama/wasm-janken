@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "alias": "wasm-janken-p1zbxs7ry-shinji-kodama.vercel.app",
+  "github": {
+    "enabled": false
+  },
+  "builds": [
+    {
+      "src": "./docs/**",
+      "use": "@now/static"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "docs/$1"
+    }
+  ]
+}
