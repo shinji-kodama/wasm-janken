@@ -31,6 +31,8 @@ default_platform = "web"
 # `build` & `serve` dist path
 out_dir = "docs"
 
+base_path = "wasm-janken"
+
 # resource (public) file folder
 # asset_dir = "public"
 
@@ -58,7 +60,7 @@ style = []
 # {% endif %}
 
 # Javascript code file
-script = []
+script = ["docs/assets/dioxus/wasm-janken.js"]
 
 [web.resource.dev]
 
