@@ -8,9 +8,9 @@ name = "wasm-janken"
 default_platform = "web"
 
 # `build` & `serve` dist path
-out_dir = "docs"
+# out_dir = "docs"
 
-base_path = "wasm-janken"
+base_path = "shinji-kodama/wasm-janken"
 
 # resource (public) file folder
 asset_dir = "public"
@@ -32,11 +32,7 @@ watch_path = ["src", "public"]
 [web.resource]
 
 # CSS style file
-# {% if styling == "Tailwind" %}
-# style = ["tailwind.css"]
-# {% else %}
 style = []
-# {% endif %}
 
 # Javascript code file
 script = []
