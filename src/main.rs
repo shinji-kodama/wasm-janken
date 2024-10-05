@@ -57,9 +57,9 @@ fn App(cx: Scope) -> Element {
   };
 
   let hands = [
-    "https://jskm.sakura.ne.jp/js01/kadai/img02/g.png",
-    "https://jskm.sakura.ne.jp/js01/kadai/img02/c.png",
-    "https://jskm.sakura.ne.jp/js01/kadai/img02/p.png"
+    "https://gs.mimoro.dev/js01/img02/g.png",
+    "https://gs.mimoro.dev/js01/img02/c.png",
+    "https://gs.mimoro.dev/js01/img02/p.png"
   ];
 
   cx.render(rsx! {
