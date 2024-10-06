@@ -82,6 +82,10 @@ fn App(cx: Scope) -> Element {
               let tmp_cpu_hand = dicide_cpu_hand();
               cpu_hand.set(tmp_cpu_hand);
               result.set(janken(i + 1, tmp_cpu_hand));
+              image_url.set(ApiResponse{
+                message: String::new(),
+                status: String::new(),
+              });
             },
             img {
               width: "64px",
@@ -131,7 +135,7 @@ fn App(cx: Scope) -> Element {
           result.get() as &str
         }
       }
-      if result.get().clone() == "負け・・・" {
+      if *result.get() == "負け・・・" {
         rsx! {
           div {
             style: "margin: 0 auto; width: 144px; display:flex; flex-direction: column; align-items:center;",
