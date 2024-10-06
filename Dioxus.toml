@@ -10,7 +10,6 @@ default_platform = "web"
 # `build` & `serve` dist path
 out_dir = "docs"
 
-base_path = "shinji-kodama/wasm-janken"
 
 # resource (public) file folder
 asset_dir = "public"
@@ -19,6 +18,8 @@ asset_dir = "public"
 
 # HTML title tag content
 title = "wasm-janken"
+
+base_path = "shinji-kodama/wasm-janken"
 
 [web.watcher]
 
